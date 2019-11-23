@@ -5,7 +5,7 @@ import (
 
 	"github.com/micro/go-micro/util/log"
 
-	conf "go-micro-pkg/config"
+	conf "github.com/hlf513/go-micro-pkg/config"
 
 	"github.com/gomodule/redigo/redis"
 )

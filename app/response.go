@@ -3,8 +3,8 @@ package app
 import (
 	"github.com/gin-gonic/gin"
 
-	"go-micro-pkg/jaeger"
-	"go-micro-pkg/log"
+	"github.com/hlf513/go-micro-pkg/jaeger"
+	"github.com/hlf513/go-micro-pkg/log"
 )
 
 type Response struct {

@@ -1,4 +1,4 @@
-module go-micro-pkg
+module github.com/hlf513/go-micro-pkg
 
 go 1.13
 

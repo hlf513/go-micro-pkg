@@ -6,9 +6,9 @@ import (
 
 	"go.uber.org/zap"
 
-	"go-micro-pkg/config"
-	"go-micro-pkg/jaeger"
-	zap2 "go-micro-pkg/zap"
+	"github.com/hlf513/go-micro-pkg/config"
+	"github.com/hlf513/go-micro-pkg/jaeger"
+	zap2 "github.com/hlf513/go-micro-pkg/zap"
 )
 
 var fields []zap.Field

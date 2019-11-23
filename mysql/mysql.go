@@ -9,7 +9,7 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	"github.com/micro/go-micro/util/log"
 
-	"go-micro-pkg/config"
+	"github.com/hlf513/go-micro-pkg/config"
 )
 
 // dbs 这里是只读

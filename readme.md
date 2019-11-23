@@ -1,4 +1,4 @@
-# Go-Micro-pkg
+# github.com/hlf513/go-micro-pkg
 
 此项目主要用于 go-micro 技术栈，作为框架的扩展存在。
 
@@ -81,12 +81,12 @@ import (
 	"github.com/micro/go-micro/config"
 	"github.com/micro/go-micro/util/log"
 
-	c "go-micro-pkg/config"
-	"go-micro-pkg/mysql"
-	"go-micro-pkg/sentry"
-	"go-micro-pkg/zap"
+	c "github.com/hlf513/go-micro-pkg/config"
+	"github.com/hlf513/go-micro-pkg/mysql"
+	"github.com/hlf513/go-micro-pkg/sentry"
+	"github.com/hlf513/go-micro-pkg/zap"
 
-	"go-micro-pkg/redis"
+	"github.com/hlf513/go-micro-pkg/redis"
 )
 
 type configs struct {
@@ -213,10 +213,10 @@ import (
 	"github.com/micro/go-plugins/wrapper/trace/opentracing"
 	openTrace "github.com/opentracing/opentracing-go"
 
-	config2 "go-micro-pkg/config"
-	tracer "go-micro-pkg/jaeger"
-	micro2 "go-micro-pkg/middleware/micro"
-	"go-micro-pkg/etcd"
+	config2 "github.com/hlf513/go-micro-pkg/config"
+	tracer "github.com/hlf513/go-micro-pkg/jaeger"
+	micro2 "github.com/hlf513/go-micro-pkg/middleware/micro"
+	"github.com/hlf513/go-micro-pkg/etcd"
 	// config 
 	// register 
 )

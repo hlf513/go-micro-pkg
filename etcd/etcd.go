@@ -4,7 +4,7 @@ import (
 	"github.com/micro/go-micro/registry"
 	"github.com/micro/go-plugins/registry/etcdv3"
 
-	"go-micro-pkg/config"
+	"github.com/hlf513/go-micro-pkg/config"
 )
 
 // Init 初始化 etcd

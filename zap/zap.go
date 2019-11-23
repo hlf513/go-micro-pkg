@@ -7,7 +7,7 @@ import (
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/natefinch/lumberjack.v2"
 
-	"go-micro-pkg/config"
+	"github.com/hlf513/go-micro-pkg/config"
 )
 
 var zlogger *zap.Logger
