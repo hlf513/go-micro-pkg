@@ -147,10 +147,10 @@ import (
 	"github.com/opentracing-contrib/go-gin/ginhttp"
 	openTrace "github.com/opentracing/opentracing-go"
 
-	config2 "crms-go/pkg/config"
-	gin2 "crms-go/pkg/middleware/gin"
-	"crms-go/pkg/etcd"
-	"crms-go/pkg/jaeger"
+	config2 "github.com/hlf513/go-micro-pkg/config"
+	gin2 "github.com/hlf513/go-micro-pkg/middleware/gin"
+	"github.com/hlf513/go-micro-pkg/etcd"
+	"github.com/hlf513/go-micro-pkg/jaeger"
 	// config
 	// router
 )
