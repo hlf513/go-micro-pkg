@@ -13,5 +13,6 @@ func Init() registry.Registry {
 		op.Addrs = []string{
 			config.GetEtcd().Host,
 		}
+		op.Timeout = config.GetEtcd().Timeout
 	})
 }

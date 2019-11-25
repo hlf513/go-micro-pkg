@@ -80,9 +80,9 @@ func (c *callbacks) after(scope *gorm.Scope, operation string) {
 	}
 	sql := scope.SQL
 	if strings.Contains(scope.SQL, "?") {
-	// replace ? to var
-	sqlLayout := strings.Replace(scope.SQL, "?", "'%v'", -1)
-	sql = fmt.Sprintf(sqlLayout, scope.SQLVars...)
+		// replace ? to var
+		sqlLayout := strings.Replace(scope.SQL, "?", "'%v'", -1)
+		sql = fmt.Sprintf(sqlLayout, scope.SQLVars...)
 	}
 	ext.DBStatement.Set(sp, sql)
 	sp.SetTag("db.vars", scope.SQLVars)
