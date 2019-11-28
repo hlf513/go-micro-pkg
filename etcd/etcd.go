@@ -1,6 +1,8 @@
 package etcd
 
 import (
+	"time"
+
 	"github.com/micro/go-micro/registry"
 	"github.com/micro/go-plugins/registry/etcdv3"
 
@@ -13,6 +15,6 @@ func Init() registry.Registry {
 		op.Addrs = []string{
 			config.GetEtcd().Host,
 		}
-		op.Timeout = config.GetEtcd().Timeout
+		op.Timeout = config.GetEtcd().Timeout * time.Second
 	})
 }
