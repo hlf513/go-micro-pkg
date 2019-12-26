@@ -1,0 +1,52 @@
+server:
+  name: go.micro.srv.entity
+  env: dev
+db:
+  default:
+    type: mysql
+    host: 127.0.0.1:3306
+    username: test
+    password: test
+    dbname: example
+    max_idle_conn: 10
+    max_open_conn: 10
+    max_lifetime: 30
+    debug: true
+  slave:
+    type: mysql
+    host: 127.0.0.1:3306
+    username: test
+    password: test
+    dbname: example
+    max_idle_conn: 10
+    max_open_conn: 10
+    max_lifetime: 30
+    debug: true
+redis:
+  default:
+    server: 127.0.0.1:6379
+    max_idle: 1
+    max_active: 50
+    connect_timeout: 500
+    read_timeout: 300
+    write_timeout: 300
+    idle_timeout: 240
+    password:
+    select_db: 0
+etcd:
+  host: 
+    - 127.0.0.1:2379
+log:
+  file_path: /var/log/example.log
+  # 单位 M
+  max_size: 1
+  max_backups: 30
+  max_age: 7
+  compress: false
+  # debug | info | warn | error
+  level: debug
+sentry:
+  dns: http://22cceca506e44660ac58c6a29fa7e583@mac.mini:9999/2
+jaeger:
+  name: trace-name
+  address: localhost:6831
