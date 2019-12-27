@@ -1,6 +1,6 @@
 # go-micro-pkg
 
-## 组件列表
+## Dependent
 1. Log => zap
 2. trace => jaeger
 3. etcd
@@ -8,22 +8,22 @@
 5. redis
 6. sentry
 
-## 中间件
+## Trace Middleware
 1. web 
 2. srv
 
+## Util
+1. 分布式锁 - [etcd](https://github.com/Scalingo/go-etcd-lock)
+2. Http lib 
+
 ## 使用方法
 
-### 系统配置
-####  配置文件
-todo
-#### micro.web
-todo
-#### micro.srv
-todo
-### 组件使用
+### 动态配置
+```bash
+# /example/config.go
+```
 
-#### Redis
+### Redis
 ```go
 // 从连接池获取连接
 rds := redis.GetConn(c.Request.Context())
@@ -31,7 +31,7 @@ rds := redis.GetConn(c.Request.Context())
 defer rds.Close()
 ```
 
-#### MySQL
+### MySQL
 ```go
 // 从连接池获取 DB 连接
 db := mysql.GetDB(ctx)
@@ -40,13 +40,15 @@ db := mysql.GetDB(ctx)
 ### Sentry
 ```go
 // 只打印文字信息
-log.SentryMessage(message string)
+sentry.SentryMessage(message string)
 // 打印文字信息 + 调用堆栈
-log.SentryException(err error)
+sentry.SentryException(err error)
 ```
 
 ### Zap
 ```go
+// 增加字段（注意不会替换已存在字段）
+zap.SetOtherFields([]zap.Field{})
 // warn,debug,fatal,error
-log.Info(ctx,"信息内容","分类")
+zap.Info(ctx,"信息内容")
 ```

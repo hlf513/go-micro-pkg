@@ -16,4 +16,3 @@ func GetTraceId(ctx context.Context) string {
 
 	return ""
 }
-

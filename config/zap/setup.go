@@ -3,6 +3,7 @@ package zap
 import (
 	"time"
 
+	"github.com/micro/go-micro/util/log"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/natefinch/lumberjack.v2"
@@ -11,14 +12,20 @@ import (
 var zlogger *zap.Logger
 
 // Setup 初始化 logger
-func Setup(l ZapLogger) {
+func Setup() {
+	zapConf, err := GetLoggerConf()
+	if err != nil {
+		log.Fatal("[zap setup] ", err.Error())
+		return
+	}
+
 	// 切分日志
 	hook := lumberjack.Logger{
-		Filename:   l.FilePath,   // 日志文件路径
-		MaxSize:    l.MaxSize,    // 每个日志文件保存的最大尺寸 单位：M
-		MaxBackups: l.MaxBackups, // 日志文件最多保存多少个备份
-		MaxAge:     l.MaxAge,     // 文件最多保存多少天
-		Compress:   l.Compress,   // 是否压缩
+		Filename:   zapConf.FilePath,   // 日志文件路径
+		MaxSize:    zapConf.MaxSize,    // 每个日志文件保存的最大尺寸 单位：M
+		MaxBackups: zapConf.MaxBackups, // 日志文件最多保存多少个备份
+		MaxAge:     zapConf.MaxAge,     // 文件最多保存多少天
+		Compress:   zapConf.Compress,   // 是否压缩
 	}
 
 	// 自定义时间格式
@@ -44,7 +51,7 @@ func Setup(l ZapLogger) {
 
 	// 设置日志级别
 	atomicLevel := zap.NewAtomicLevel()
-	switch l.Level {
+	switch zapConf.Level {
 	case "debug":
 		atomicLevel.SetLevel(zap.DebugLevel)
 	case "info":
