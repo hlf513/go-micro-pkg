@@ -15,11 +15,7 @@ var dbInstance = make(map[string]*gorm.DB)
 
 // Connect 连接 MySQL
 func Connect() {
-	configs, err := GetDBConf()
-	if err != nil {
-		log.Fatal("[mysql connect] ", err.Error())
-	}
-
+	configs := GetConf()
 	for name, dbCfg := range configs {
 		db, err := gorm.Open(
 			"mysql",

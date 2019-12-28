@@ -15,9 +15,9 @@ db:
   slave:
     type: mysql
     host: 127.0.0.1:3306
-    username: test
-    password: test
-    dbname: example
+    username: test1
+    password: test1
+    dbname: example1
     max_idle_conn: 10
     max_open_conn: 10
     max_lifetime: 30
@@ -36,6 +36,7 @@ redis:
 etcd:
   host: 
     - 127.0.0.1:2379
+  timeout: 1
 log:
   file_path: /var/log/example.log
   # 单位 M

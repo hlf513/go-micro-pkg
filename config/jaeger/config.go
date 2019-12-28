@@ -1,19 +1,50 @@
 package jaeger
 
-import "github.com/hlf513/go-micro-pkg/config"
+import (
+	"encoding/json"
+	"sync"
 
-type Jaeger struct {
+	"github.com/hlf513/go-micro-pkg/config"
+)
+
+// jaeger 定义配置项
+type jaeger struct {
 	Name    string `json:"name"`
 	Address string `json:"address"`
 }
 
-// j 初始化
-var j = &Jaeger{}
+// conf 定义更新配置
+type conf struct {
+	Jaeger *jaeger
+}
 
-// GetJaegerConf 读取配置
-func GetJaegerConf() (*Jaeger, error) {
-	if err := config.GetConfigurator().Get([]string{"jaeger"}, j); err != nil {
-		return nil, err
+var (
+	jaegerConf = &conf{}
+	s          sync.RWMutex
+)
+
+// GetConf 读取配置
+func GetConf() *jaeger {
+	s.RLock()
+	defer s.RUnlock()
+
+	return jaegerConf.Jaeger
+}
+
+// SetConf 更新配置
+func SetConf(c []byte) error {
+	s.Lock()
+	defer s.Unlock()
+
+	if c == nil {
+		if err := config.GetConfigurator().Get([]string{"jaeger"}, &jaegerConf.Jaeger); err != nil {
+			return err
+		}
+	} else {
+		if err := json.Unmarshal(c, jaegerConf); err != nil {
+			return err
+		}
 	}
-	return j, nil
+
+	return nil
 }

@@ -12,14 +12,12 @@ import (
 var (
 	// c 初始化配置器
 	c = &configurator{}
-	// initialize  micro config 是否初始化
-	initialize bool
 )
 
 // Configurator 配置器接口
 type Configurator interface {
 	// Init 初始化 micro config，并监控改动
-	Init(source ...source.Source) error
+	Init(configs []func(config []byte) error, source ...source.Source) error
 	// Get 实时读取配置信息并解析
 	Get(name []string, config interface{}) error
 }
@@ -30,12 +28,7 @@ type configurator struct {
 }
 
 // Init 初始化 micro config，并监控改动
-func (c *configurator) Init(source ...source.Source) error {
-	// 防止重复初始化
-	if initialize {
-		log.Info("[initialise config]: initialised")
-		return nil
-	}
+func (c *configurator) Init(configs []func(config []byte) error, source ...source.Source) error {
 	c.conf = config.NewConfig()
 	// 加载配置
 	if err := c.conf.Load(source...); err != nil {
@@ -48,15 +41,28 @@ func (c *configurator) Init(source ...source.Source) error {
 			log.Fatal("[initialise config] watch error:", err.Error())
 		}
 		for {
-			if _, err := w.Next(); err != nil {
+			v, err := w.Next()
+			if err != nil {
 				log.Fatalf("[initialise config] watch next error，%s", err)
 				return
 			}
-			// log.Printf("config was changed， %s", string(v.Bytes()))
+			// log.Infof("config was changed， %s", string(v.Bytes()))
+			// 更新配置
+			modify := v.Bytes()
+			for _, f := range configs {
+				if err := f(modify); err != nil {
+					log.Warn("[update config] ", err.Error())
+				}
+			}
 		}
 	}()
 
-	initialize = true
+	// 读取配置
+	for _, f := range configs {
+		if err := f(nil); err != nil {
+			log.Fatal("[initialise config] ", err.Error())
+		}
+	}
 
 	return nil
 }

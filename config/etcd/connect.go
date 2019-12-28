@@ -1,16 +1,12 @@
 package etcd
 
 import (
-	"github.com/micro/go-micro/util/log"
 	"go.etcd.io/etcd/clientv3"
 )
 
 // Client 创建 etcd client
 func Connect() (*clientv3.Client, error) {
-	etcdConf, err := GetEtcdConf()
-	if err != nil {
-		log.Fatal("[etcd connect] ", err.Error())
-	}
+	etcdConf := GetConf()
 	client, err := clientv3.New(clientv3.Config{
 		Endpoints: etcdConf.Host,
 	})

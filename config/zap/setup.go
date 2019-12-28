@@ -3,7 +3,6 @@ package zap
 import (
 	"time"
 
-	"github.com/micro/go-micro/util/log"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/natefinch/lumberjack.v2"
@@ -13,11 +12,7 @@ var zlogger *zap.Logger
 
 // Setup 初始化 logger
 func Setup() {
-	zapConf, err := GetLoggerConf()
-	if err != nil {
-		log.Fatal("[zap setup] ", err.Error())
-		return
-	}
+	zapConf := GetConf()
 
 	// 切分日志
 	hook := lumberjack.Logger{

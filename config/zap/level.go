@@ -5,8 +5,6 @@ import (
 
 	"go.uber.org/zap"
 
-	"github.com/micro/go-micro/util/log"
-
 	"github.com/hlf513/go-micro-pkg/config/jaeger"
 	"github.com/hlf513/go-micro-pkg/config/server"
 )
@@ -21,11 +19,7 @@ func SetOtherFields(fs []zap.Field) {
 
 // otherFields 获取其他字段
 func otherFields(ctx context.Context) []zap.Field {
-	serverConf, err := server.GetServerConf()
-	if err != nil {
-		log.Warn("[logger] config error:", err.Error())
-		serverConf = &server.Server{}
-	}
+	serverConf := server.GetConf()
 	otherFields := []zap.Field{
 		zap.String("traceId", jaeger.GetTraceId(ctx)),
 		zap.String("app", serverConf.Name),

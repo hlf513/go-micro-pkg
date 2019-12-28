@@ -1,19 +1,15 @@
 package sentry
 
 import (
-	"github.com/getsentry/sentry-go"
+	client "github.com/getsentry/sentry-go"
 	"github.com/micro/go-micro/util/log"
 )
 
-// Setup 初始化 sentry
-func Setup() {
-	sentryConf, err := GetSentryConf()
-	if err != nil {
-		log.Fatal("[sentry setup] ", err.Error())
-		return
-	}
+// Connect 连接 sentry server
+func Connect() {
+	sentryConf := GetConf()
 
-	if err := sentry.Init(sentry.ClientOptions{
+	if err := client.Init(client.ClientOptions{
 		Dsn: sentryConf.Dns,
 	}); err != nil {
 		log.Fatal("[sentry setup] initialise failed:", err.Error())

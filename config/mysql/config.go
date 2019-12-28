@@ -1,12 +1,16 @@
 package mysql
 
 import (
+	"encoding/json"
+	"fmt"
+	"sync"
 	"time"
 
 	"github.com/hlf513/go-micro-pkg/config"
 )
 
-type DB struct {
+// DB 定义配置项
+type db struct {
 	Type        string
 	Host        string
 	Username    string
@@ -18,15 +22,38 @@ type DB struct {
 	Debug       bool
 }
 
-// dbs 初始化
-var dbs = make(map[string]DB)
+// conf 定义更新配置
+type conf struct {
+	DB map[string]db `json:"db"`
+}
 
-// GetDBs 读取配置
-func GetDBConf() (map[string]DB, error) {
-	err := config.GetConfigurator().Get([]string{"db"}, &dbs)
-	if err != nil {
-		return nil, err
+var (
+	dbConf = &conf{}
+	s      sync.RWMutex
+)
+
+// GetConf 读取配置
+func GetConf() map[string]db {
+	s.RLock()
+	defer s.RUnlock()
+
+	return dbConf.DB
+}
+
+// SetConf 更新配置
+func SetConf(c []byte) error {
+	s.Lock()
+	defer s.Unlock()
+
+	if c == nil {
+		if err := config.GetConfigurator().Get([]string{"db"}, &dbConf.DB); err != nil {
+			return err
+		}
+	} else {
+		if err := json.Unmarshal(c, dbConf); err != nil {
+			return err
+		}
 	}
 
-	return dbs, nil
+	return nil
 }

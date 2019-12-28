@@ -7,15 +7,12 @@ import (
 	"github.com/micro/go-micro/util/log"
 )
 
-// rds 连接池
-var rds = make(map[string]*redis.Pool)
+// rdps 连接池
+var rdps = make(map[string]*redis.Pool)
 
 // Connect 创建 Redis 连接池
 func Connect() {
-	configs, err := GetRedisConf()
-	if err != nil {
-		log.Fatal("[redis connect] ", err.Error())
-	}
+	configs := GetConf()
 
 	for name, config := range configs {
 		redisPool := &redis.Pool{
@@ -57,14 +54,14 @@ func Connect() {
 			Wait: true,
 		}
 
-		rds[name] = redisPool
+		rdps[name] = redisPool
 		log.Info("[redis connect] 初始化 Reids 连接：" + name)
 	}
 }
 
 // Close 关闭 Redis 连接池
 func Close() {
-	for _, r := range rds {
+	for _, r := range rdps {
 		if r != nil {
 			_ = r.Close()
 		}
@@ -73,7 +70,7 @@ func Close() {
 
 // getPool 获取 Redis 连接池
 func getPool(name string) *redis.Pool {
-	if r, ok := rds[name]; ok {
+	if r, ok := rdps[name]; ok {
 		return r
 	} else {
 		log.Fatal("[redis GetPool] 未找到 redis 连接池:" + name)

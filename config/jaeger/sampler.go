@@ -1,19 +1,19 @@
 package jaeger
 
-import "github.com/uber/jaeger-client-go"
+import client "github.com/uber/jaeger-client-go"
 
 // sampler 采样率
-var sampler jaeger.Sampler
+var sampler client.Sampler
 
 // SetSampler 设置采样率
-func SetSampler(s jaeger.Sampler) {
+func SetSampler(s client.Sampler) {
 	sampler = s
 }
 
 // GetSampler 获取采样率
-func GetSampler() jaeger.Sampler {
+func GetSampler() client.Sampler {
 	if sampler == nil {
-		return jaeger.NewConstSampler(true) // 全量追踪
+		return client.NewConstSampler(true) // 全量追踪
 	}
 
 	return sampler
