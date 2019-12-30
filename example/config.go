@@ -33,7 +33,7 @@ func Init() {
 	// )
 	// file 会覆盖 etcd
 	if err := util.GetConfigurator().Init(
-		[]func(config []byte) error{
+		[]util.SetterFunc{
 			etcd.SetConf,
 			mysql.SetConf,
 			jaeger.SetConf,

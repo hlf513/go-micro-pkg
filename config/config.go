@@ -14,10 +14,12 @@ var (
 	c = &configurator{}
 )
 
+type SetterFunc func(data []byte) error
+
 // Configurator 配置器接口
 type Configurator interface {
 	// Init 初始化 micro config，并监控改动
-	Init(configs []func(config []byte) error, source ...source.Source) error
+	Init(configs []SetterFunc, source ...source.Source) error
 	// Get 实时读取配置信息并解析
 	Get(name []string, config interface{}) error
 }
@@ -28,7 +30,7 @@ type configurator struct {
 }
 
 // Init 初始化 micro config，并监控改动
-func (c *configurator) Init(configs []func(config []byte) error, source ...source.Source) error {
+func (c *configurator) Init(configs []SetterFunc, source ...source.Source) error {
 	c.conf = config.NewConfig()
 	// 加载配置
 	if err := c.conf.Load(source...); err != nil {

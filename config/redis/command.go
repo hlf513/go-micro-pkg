@@ -22,7 +22,7 @@ func GetConn(ctx context.Context, poolName ...string) *redisConn {
 	var span opentracing.Span
 	parentSpan := opentracing.SpanFromContext(ctx)
 	if parentSpan != nil {
-		span = parentSpan.Tracer().StartSpan("Redis", opentracing.ChildOf(parentSpan.Context()))
+		span, _ = opentracing.StartSpanFromContext(ctx, "Redis")
 	}
 
 	return &redisConn{
@@ -31,7 +31,7 @@ func GetConn(ctx context.Context, poolName ...string) *redisConn {
 	}
 }
 
-// redisConn 
+// redisConn
 type redisConn struct {
 	conn redis.Conn
 	span opentracing.Span
@@ -52,7 +52,6 @@ func (r redisConn) Do(commandName string, args ...interface{}) (interface{}, err
 	}
 	if r.span != nil {
 		r.span.LogKV("value", replay)
-		r.span.Finish()
 	}
 	return replay, nil
 }
