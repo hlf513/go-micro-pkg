@@ -37,7 +37,7 @@ etcd:
   host: 
     - 127.0.0.1:2379
   timeout: 1
-log:
+zap:
   file_path: /var/log/example.log
   # 单位 M
   max_size: 1
