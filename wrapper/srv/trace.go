@@ -3,6 +3,7 @@ package srv
 import (
 	"context"
 	"encoding/json"
+	"runtime/debug"
 
 	"github.com/gogo/protobuf/jsonpb"
 	"github.com/gogo/protobuf/proto"
@@ -11,8 +12,8 @@ import (
 	"github.com/opentracing/opentracing-go/ext"
 )
 
-// TraceLogWrapper 记录 rpc server 的请求和响应到 tracing 
-func TraceLogWrapper() server.HandlerWrapper {
+// TraceLog 记录 rpc server 的请求和响应到 tracing 
+func TraceLog() server.HandlerWrapper {
 	return func(h server.HandlerFunc) server.HandlerFunc {
 		return func(ctx context.Context, req server.Request, rsp interface{}) error {
 			span := opentracing.SpanFromContext(ctx)
@@ -30,7 +31,7 @@ func TraceLogWrapper() server.HandlerWrapper {
 					// 记录错误信息
 					span.SetTag("error", true)
 					ext.SamplingPriority.Set(span, 1)
-					span.LogKV("error_msg", err.Error())
+					span.LogKV("error_msg", err.Error(), "debug.stack", debug.Stack())
 				}
 
 				// 记录响应
