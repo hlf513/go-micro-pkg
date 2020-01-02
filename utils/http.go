@@ -17,7 +17,7 @@ import (
 )
 
 // BuildUrl 构建 GET URL
-func BuildUrl(ctx context.Context, u string, p map[string]string) (string, error) {
+func BuildUrl(u string, p map[string]string) (string, error) {
 	params := url.Values{}
 	rawUrl, err := url.Parse(u)
 	if err != nil {
@@ -43,26 +43,29 @@ func parseTimeout(t ...int) time.Duration {
 }
 
 // HttpGet 发起 Get 请求
-func HttpGet(ctx context.Context, u string, timeout ...int) ([]byte, error) {
+func HttpGet(ctx context.Context, u string, header map[string]string, timeout ...int) ([]byte, int, error) {
 	client := &http.Client{
 		Timeout: parseTimeout(timeout...) * time.Second,
 	}
 	req, err := http.NewRequest("GET", u, nil)
 	if err != nil {
-		return nil, err
+		return nil, 0, err
+	}
+	for k, v := range header {
+		req.Header.Add(k, v)
 	}
 	resp, err := client.Do(req)
 	if err != nil {
-		return nil, err
+		return nil, 0, err
 	}
 	code := resp.StatusCode
 	if code != 200 {
-		return nil, errors.New(fmt.Sprintf("code status:%d", code))
+		return nil, code, errors.New(fmt.Sprintf("code status:%d", code))
 	}
 	ret, err := ioutil.ReadAll(resp.Body)
 	_ = resp.Body.Close()
 	if err != nil {
-		return nil, errors.New(fmt.Sprintf("read body:%s", err.Error()))
+		return nil, code, errors.New(fmt.Sprintf("read body:%s", err.Error()))
 	}
 
 	// tracing
@@ -72,32 +75,35 @@ func HttpGet(ctx context.Context, u string, timeout ...int) ([]byte, error) {
 		defer span.Finish()
 	}
 
-	return ret, nil
+	return ret, code, nil
 }
 
 // HttpPostJson 发起 Post Json 请求
-func HttpPostJson(ctx context.Context, u string, json []byte, timeout ...int) ([]byte, error) {
+func HttpPostJson(ctx context.Context, u string, json []byte, header map[string]string, timeout ...int) ([]byte, int, error) {
 	client := &http.Client{
 		Timeout: parseTimeout(timeout...) * time.Second,
 	}
 	req, err := http.NewRequest("POST", u, bytes.NewReader(json))
 	if err != nil {
-		return nil, err
+		return nil, 0, err
 	}
 
 	req.Header.Set("Content-Type", "application/json")
+	for k, v := range header {
+		req.Header.Add(k, v)
+	}
 	resp, err := client.Do(req)
 	if err != nil {
-		return nil, err
+		return nil, 0, err
 	}
 	code := resp.StatusCode
 	if code != 200 {
-		return nil, errors.New(fmt.Sprintf("code status:%d", code))
+		return nil, code, errors.New(fmt.Sprintf("code status:%d", code))
 	}
 	ret, err := ioutil.ReadAll(resp.Body)
 	_ = resp.Body.Close()
 	if err != nil {
-		return nil, errors.New(fmt.Sprintf("read body:%s", err.Error()))
+		return nil, code, errors.New(fmt.Sprintf("read body:%s", err.Error()))
 	}
 
 	span, _ := opentracing.StartSpanFromContext(ctx, "http-post-json")
@@ -106,33 +112,33 @@ func HttpPostJson(ctx context.Context, u string, json []byte, timeout ...int) ([
 		defer span.Finish()
 	}
 
-	return ret, nil
+	return ret, code, nil
 }
 
 // HttpPost 发起 Post 请求
-func HttpPost(ctx context.Context, u string, param []byte, header map[string]interface{}, timeout ...int) ([]byte, error) {
+func HttpPost(ctx context.Context, u string, param []byte, header map[string]interface{}, timeout ...int) ([]byte, int, error) {
 	client := &http.Client{
 		Timeout: parseTimeout(timeout...) * time.Second,
 	}
 	req, err := http.NewRequest("POST", u, bytes.NewReader(param))
 	if err != nil {
-		return nil, err
+		return nil, 0, err
 	}
 	for k, v := range header {
 		req.Header.Add(k, fmt.Sprintf("%v", v))
 	}
 	res, err := client.Do(req)
 	if err != nil {
-		return nil, err
+		return nil, 0, err
 	}
 	code := res.StatusCode
 	if code != 200 {
-		return nil, errors.New(fmt.Sprintf("code status:%d", code))
+		return nil, code, errors.New(fmt.Sprintf("code status:%d", code))
 	}
 	ret, err := ioutil.ReadAll(res.Body)
 	_ = res.Body.Close()
 	if err != nil {
-		return nil, errors.New(fmt.Sprintf("read body:%s", err.Error()))
+		return nil, code, errors.New(fmt.Sprintf("read body:%s", err.Error()))
 	}
 
 	// tracing
@@ -141,11 +147,11 @@ func HttpPost(ctx context.Context, u string, param []byte, header map[string]int
 		span.LogKV("url", u, "header", req.Header, "request", string(param), "code", code, "response", string(ret))
 		defer span.Finish()
 	}
-	return ret, nil
+	return ret, code, nil
 }
 
 // HttpPostForm 发起 Post Form 请求
-func HttpPostForm(ctx context.Context, u string, data map[string]string, timeout ...int) ([]byte, error) {
+func HttpPostForm(ctx context.Context, u string, data map[string]string, timeout ...int) ([]byte, int, error) {
 	values := url.Values{}
 	for k, v := range data {
 		values.Set(k, v)
@@ -157,7 +163,7 @@ func HttpPostForm(ctx context.Context, u string, data map[string]string, timeout
 }
 
 // HttpPostFile 发起 Post file 请求
-func HttpPostFile(ctx context.Context, url, formFileName, filePath string, params map[string]string, timeout ...int) ([]byte, error) {
+func HttpPostFile(ctx context.Context, url, formFileName, filePath string, params map[string]string, timeout ...int) ([]byte, code, error) {
 	// 读取文件
 	file, err := os.Open(filePath)
 	if err != nil {
@@ -171,7 +177,7 @@ func HttpPostFile(ctx context.Context, url, formFileName, filePath string, param
 	// 设置上传文件的 form 选项
 	part, err := writer.CreateFormFile(formFileName, formFileName)
 	if err != nil {
-		return nil, err
+		return nil, 0, err
 	}
 	// 将文件放入 form
 	_, err = io.Copy(part, file)
@@ -182,13 +188,13 @@ func HttpPostFile(ctx context.Context, url, formFileName, filePath string, param
 	// 关闭 writer 不能使用 defer
 	err = writer.Close()
 	if err != nil {
-		return nil, err
+		return nil, 0, err
 	}
 
 	// 创建请求
 	request, err := http.NewRequest("POST", url, body)
 	if err != nil {
-		return nil, err
+		return nil, 0, err
 	}
 	request.Header.Add("Content-Type", writer.FormDataContentType())
 	// 发起请求
@@ -197,17 +203,17 @@ func HttpPostFile(ctx context.Context, url, formFileName, filePath string, param
 	}
 	res, err := client.Do(request)
 	if err != nil {
-		return nil, err
+		return nil, 0, err
 	}
 	// 读取响应
 	code := res.StatusCode
 	if code != 200 {
-		return nil, errors.New(fmt.Sprintf("code status:%d", code))
+		return nil, code, errors.New(fmt.Sprintf("code status:%d", code))
 	}
 	ret, err := ioutil.ReadAll(res.Body)
 	_ = res.Body.Close()
 	if err != nil {
-		return nil, errors.New(fmt.Sprintf("read body:%s", err.Error()))
+		return nil, code, errors.New(fmt.Sprintf("read body:%s", err.Error()))
 	}
 
 	// tracing
@@ -216,5 +222,5 @@ func HttpPostFile(ctx context.Context, url, formFileName, filePath string, param
 		span.LogKV("url", url, "request", fmt.Sprintf("%v", params), "code", code, "response", string(ret))
 		defer span.Finish()
 	}
-	return ret, nil
+	return ret, code, nil
 }
