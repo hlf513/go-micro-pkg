@@ -163,7 +163,7 @@ func HttpPostForm(ctx context.Context, u string, data map[string]string, timeout
 }
 
 // HttpPostFile 发起 Post file 请求
-func HttpPostFile(ctx context.Context, url, formFileName, filePath string, params map[string]string, timeout ...int) ([]byte, code, error) {
+func HttpPostFile(ctx context.Context, url, formFileName, filePath string, params map[string]string, timeout ...int) ([]byte, int, error) {
 	// 读取文件
 	file, err := os.Open(filePath)
 	if err != nil {
