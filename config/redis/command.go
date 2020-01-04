@@ -39,9 +39,6 @@ type redisConn struct {
 
 // Do 执行 redis 命令
 func (r redisConn) Do(commandName string, args ...interface{}) (interface{}, error) {
-	if r.span != nil {
-		r.span.LogKV("cmd", commandName, "args", args)
-	}
 	replay, err := r.conn.Do(commandName, args...)
 	if err != nil {
 		if r.span != nil {

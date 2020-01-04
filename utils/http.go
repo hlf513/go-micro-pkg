@@ -44,6 +44,9 @@ func parseTimeout(t ...int) time.Duration {
 
 // HttpGet 发起 Get 请求
 func HttpGet(ctx context.Context, u string, header map[string]string, timeout ...int) ([]byte, int, error) {
+	// tracing
+	span, _ := opentracing.StartSpanFromContext(ctx, "http-get")
+
 	client := &http.Client{
 		Timeout: parseTimeout(timeout...) * time.Second,
 	}
@@ -69,7 +72,6 @@ func HttpGet(ctx context.Context, u string, header map[string]string, timeout ..
 	}
 
 	// tracing
-	span, _ := opentracing.StartSpanFromContext(ctx, "http-get")
 	if span != nil {
 		span.LogKV("url", u, "code", code, "response", string(ret))
 		defer span.Finish()
@@ -80,6 +82,9 @@ func HttpGet(ctx context.Context, u string, header map[string]string, timeout ..
 
 // HttpPostJson 发起 Post Json 请求
 func HttpPostJson(ctx context.Context, u string, json []byte, header map[string]string, timeout ...int) ([]byte, int, error) {
+	// tracing
+	span, _ := opentracing.StartSpanFromContext(ctx, "http-post-json")
+	
 	client := &http.Client{
 		Timeout: parseTimeout(timeout...) * time.Second,
 	}
@@ -106,7 +111,7 @@ func HttpPostJson(ctx context.Context, u string, json []byte, header map[string]
 		return nil, code, errors.New(fmt.Sprintf("read body:%s", err.Error()))
 	}
 
-	span, _ := opentracing.StartSpanFromContext(ctx, "http-post-json")
+	// tracing
 	if span != nil {
 		span.LogKV("url", u, "header", req.Header, "request", json, "code", code, "response", string(ret))
 		defer span.Finish()
@@ -117,6 +122,9 @@ func HttpPostJson(ctx context.Context, u string, json []byte, header map[string]
 
 // HttpPost 发起 Post 请求
 func HttpPost(ctx context.Context, u string, param []byte, header map[string]interface{}, timeout ...int) ([]byte, int, error) {
+	// tracing
+	span, _ := opentracing.StartSpanFromContext(ctx, "http-post")
+	
 	client := &http.Client{
 		Timeout: parseTimeout(timeout...) * time.Second,
 	}
@@ -142,7 +150,6 @@ func HttpPost(ctx context.Context, u string, param []byte, header map[string]int
 	}
 
 	// tracing
-	span, _ := opentracing.StartSpanFromContext(ctx, "http-post")
 	if span != nil {
 		span.LogKV("url", u, "header", req.Header, "request", string(param), "code", code, "response", string(ret))
 		defer span.Finish()
@@ -164,6 +171,9 @@ func HttpPostForm(ctx context.Context, u string, data map[string]string, timeout
 
 // HttpPostFile 发起 Post file 请求
 func HttpPostFile(ctx context.Context, url, formFileName, filePath string, params map[string]string, timeout ...int) ([]byte, int, error) {
+	// tracing
+	span, _ := opentracing.StartSpanFromContext(ctx, "http-post-file")
+
 	// 读取文件
 	file, err := os.Open(filePath)
 	if err != nil {
@@ -217,7 +227,6 @@ func HttpPostFile(ctx context.Context, url, formFileName, filePath string, param
 	}
 
 	// tracing
-	span, _ := opentracing.StartSpanFromContext(ctx, "http-post-file")
 	if span != nil {
 		span.LogKV("url", url, "request", fmt.Sprintf("%v", params), "code", code, "response", string(ret))
 		defer span.Finish()
