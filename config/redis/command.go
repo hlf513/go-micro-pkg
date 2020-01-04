@@ -47,11 +47,13 @@ func (r redisConn) Do(commandName string, args ...interface{}) (interface{}, err
 		if r.span != nil {
 			ext.SamplingPriority.Set(r.span, 1)
 			r.span.SetTag("error", true)
+			r.span.LogKV("error", err.Error())
 		}
 		return nil, err
 	}
 	if r.span != nil {
-		r.span.LogKV("value", replay)
+		value, _ := redis.String(replay, nil)
+		r.span.LogKV("cmd", commandName, "args", args, "value", value)
 	}
 	return replay, nil
 }
