@@ -15,6 +15,7 @@
 ## Util
 1. 分布式锁 - [etcd](https://github.com/Scalingo/go-etcd-lock)
 2. Http lib 
+3. AES (ECB 加密模式)
 
 ## 使用方法
 
