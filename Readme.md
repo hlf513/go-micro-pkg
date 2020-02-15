@@ -53,3 +53,6 @@ zap.SetOtherFields([]zap.Field{})
 // warn,debug,fatal,error
 zap.Info(ctx,"信息内容")
 ```
+
+### hystrix
+参考 `config/hystrix/client.go:33` 替换原始的 `client.DefaultClient`
