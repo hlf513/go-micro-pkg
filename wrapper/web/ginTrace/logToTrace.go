@@ -12,8 +12,6 @@ import (
 	"github.com/opentracing/opentracing-go/ext"
 )
 
-
-
 // bodyLogWriter 暂存响应
 type bodyLogWriter struct {
 	gin.ResponseWriter
@@ -26,8 +24,8 @@ func (w bodyLogWriter) Write(b []byte) (int, error) {
 	return w.ResponseWriter.Write(b)
 }
 
-// RecordLog 记录 gin 的请求、响应、错误日志
-func RecordLog() gin.HandlerFunc {
+// LogToTraceWrapper 记录 gin 的请求、响应、错误日志
+func LogToTraceWrapper() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		span := opentracing.SpanFromContext(c.Request.Context())
 		if span == nil {
@@ -88,4 +86,3 @@ func RecordLog() gin.HandlerFunc {
 		span.LogKV("response", blw.body.String())
 	}
 }
-

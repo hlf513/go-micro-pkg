@@ -7,6 +7,7 @@
 4. mysql
 5. redis
 6. sentry
+7. hystrix
 
 ## Trace Middleware
 1. web 
@@ -56,3 +57,10 @@ zap.Info(ctx,"信息内容")
 
 ### hystrix
 参考 `config/hystrix/client.go:33` 替换原始的 `client.DefaultClient`
+
+### waitGroup
+> 额外作用：平滑关闭
+
+```
+// 在每个 goroutine 中使用common.WaitGroup()
+```

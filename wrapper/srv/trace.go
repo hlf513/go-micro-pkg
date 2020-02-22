@@ -12,8 +12,8 @@ import (
 	"github.com/opentracing/opentracing-go/ext"
 )
 
-// TraceLog 记录 rpc server 的请求和响应到 tracing 
-func TraceLog() server.HandlerWrapper {
+// TraceLogWrapper 记录 rpc server 的请求和响应到 tracing 
+func TraceLogWrapper() server.HandlerWrapper {
 	return func(h server.HandlerFunc) server.HandlerFunc {
 		return func(ctx context.Context, req server.Request, rsp interface{}) error {
 			span := opentracing.SpanFromContext(ctx)

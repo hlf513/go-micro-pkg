@@ -7,8 +7,8 @@ import (
 	"github.com/opentracing/opentracing-go"
 )
 
-// GinInjectMetadata 注入 metadata 到 tracing（原生 micro srv 的 trace 依赖 metadata）
-func InjectMetadata() gin.HandlerFunc {
+// InjectMetadataWrapper 注入 metadata 到 tracing（原生 micro srv 的 trace 依赖 metadata）
+func InjectMetadataWrapper() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		span := opentracing.SpanFromContext(c.Request.Context())
 		md := make(map[string]string)

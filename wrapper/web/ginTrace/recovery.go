@@ -13,8 +13,8 @@ import (
 	"github.com/opentracing/opentracing-go/ext"
 )
 
-// GinRecovery 恢复 panic 并记录到日志中
-func Recovery() gin.HandlerFunc {
+// RecoveryWrapper 恢复 panic 并记录到日志中
+func RecoveryWrapper() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		defer func() {
 			if err := recover(); err != nil {
