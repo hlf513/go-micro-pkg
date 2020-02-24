@@ -18,6 +18,7 @@ func RecoveryWrapper() server.HandlerWrapper {
 			defer func() {
 				if p := recover(); p != nil {
 					span := opentracing.SpanFromContext(ctx)
+					errMsg := fmt.Sprintf("%v", p)
 					if span != nil {
 						span.SetTag("error", true)
 						ext.SamplingPriority.Set(span, 1)
@@ -26,12 +27,12 @@ func RecoveryWrapper() server.HandlerWrapper {
 							"error",
 							fmt.Sprintf(
 								`[Recovery from panic] - %s - %s`,
-								p.(string),
+								errMsg,
 								debug.Stack(),
 							))
 						opentracing.ContextWithSpan(ctx, span)
 					}
-					err = errors.New(req.Method(), p.(string), 599)
+					err = errors.New(req.Method(), errMsg, 599)
 				}
 			}()
 
