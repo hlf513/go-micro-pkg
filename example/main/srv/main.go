@@ -1,12 +1,14 @@
 package main
 
 import (
+	"context"
 	"os"
 	"strings"
 	"time"
 
 	"github.com/micro/go-micro"
 	"github.com/micro/go-micro/registry"
+	s "github.com/micro/go-micro/server"
 	"github.com/micro/go-micro/util/log"
 	"github.com/micro/go-plugins/registry/etcdv3"
 	"github.com/micro/go-plugins/wrapper/trace/opentracing"
@@ -70,8 +72,30 @@ func main() {
 	// 注册 Handler
 	handler.Register(service)
 
+	// register subscriber
+	// topic 不能和 server name 相同；否则会重复消费
+	micro.RegisterSubscriber(
+		"test",
+		service.Server(),
+		new(Sub),
+		s.SubscriberQueue("test-queue"), // 增加这个参数后，多个 sub 只有一个会执行
+	)
+
 	// 运行 service
 	if err := service.Run(); err != nil {
 		log.Fatal("server run:", err.Error())
 	}
+}
+
+// All methods of Sub will be executed when
+// a message is received
+type Sub struct{}
+
+// Method can be of any name
+// common.Event 自定义的 proto
+func (s *Sub) Process(ctx context.Context, event *common.Event) error {
+	// md, _ := metadata.FromContext(ctx)
+	log.Logf("[pubsub.1] Received event %+v with metadata\n", event)
+	// do something with event
+	return nil
 }
