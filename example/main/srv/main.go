@@ -61,7 +61,7 @@ func main() {
 
 		// waitGroup && graceful shutdown
 		micro.WrapHandler(srv.WaitGroupWrapper(common.WaitGroup())),
-		micro.AfterStop(func() error {
+		micro.BeforeStop(func() error {
 			common.WaitGroup().Wait()
 			time.Sleep(1 * time.Second) // 等待响应输出后再关闭
 			return nil
