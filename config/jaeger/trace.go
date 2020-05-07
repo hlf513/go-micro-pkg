@@ -3,6 +3,7 @@ package jaeger
 import (
 	"context"
 
+	"github.com/micro/go-micro/metadata"
 	"github.com/opentracing/opentracing-go"
 	client "github.com/uber/jaeger-client-go"
 )
