@@ -4,7 +4,7 @@ import (
 	"context"
 	"sync"
 
-	"github.com/micro/go-micro/server"
+	"github.com/micro/go-micro/v2/server"
 )
 
 // WaitGroupWrapper is a handler wrapper which adds a handler to a sync.WaitGroup

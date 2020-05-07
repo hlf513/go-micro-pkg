@@ -2,8 +2,8 @@ package hystrix
 
 import (
 	hg "github.com/afex/hystrix-go/hystrix"
-	"github.com/micro/go-micro/client"
-	micro "github.com/micro/go-plugins/wrapper/breaker/hystrix"
+	"github.com/micro/go-micro/v2/client"
+	micro "github.com/micro/go-plugins/wrapper/breaker/hystrix/v2"
 )
 
 // DefaultRetries 默认重试次数

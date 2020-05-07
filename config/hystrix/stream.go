@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	hg "github.com/afex/hystrix-go/hystrix"
-	"github.com/micro/go-micro/util/log"
+	"github.com/micro/go-micro/v2/util/log"
 )
 
 func StreamServer() {

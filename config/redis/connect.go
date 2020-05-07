@@ -4,7 +4,7 @@ import (
 	"time"
 
 	"github.com/gomodule/redigo/redis"
-	"github.com/micro/go-micro/util/log"
+	"github.com/micro/go-micro/v2/util/log"
 )
 
 // rdps 连接池

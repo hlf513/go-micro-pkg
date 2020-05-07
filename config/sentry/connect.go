@@ -2,7 +2,7 @@ package sentry
 
 import (
 	client "github.com/getsentry/sentry-go"
-	"github.com/micro/go-micro/util/log"
+	"github.com/micro/go-micro/v2/util/log"
 )
 
 // Connect 连接 sentry server

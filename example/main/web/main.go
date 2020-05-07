@@ -6,13 +6,13 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/micro/go-micro/registry"
-	"github.com/micro/go-micro/util/log"
-	"github.com/micro/go-micro/web"
-	"github.com/micro/go-plugins/registry/etcdv3"
+	"github.com/micro/go-micro/v2/registry"
+	"github.com/micro/go-micro/v2/registry/etcd"
+	"github.com/micro/go-micro/v2/util/log"
+	"github.com/micro/go-micro/v2/web"
 	"github.com/opentracing-contrib/go-gin/ginhttp"
 
-	"github.com/hlf513/go-micro-pkg/config/etcd"
+	e "github.com/hlf513/go-micro-pkg/config/etcd"
 	"github.com/hlf513/go-micro-pkg/config/jaeger"
 	"github.com/hlf513/go-micro-pkg/config/server"
 	"github.com/hlf513/go-micro-pkg/example/config"
@@ -39,8 +39,8 @@ func main() {
 		web.Name(server.GetConf().Name),
 		web.Version("latest"),
 
-		web.Registry(etcdv3.NewRegistry(func(op *registry.Options) {
-			op.Addrs = etcd.GetConf().Host
+		web.Registry(etcd.NewRegistry(func(op *registry.Options) {
+			op.Addrs = e.GetConf().Host
 		})),
 
 		// web.RegisterTTL(30*time.Second),

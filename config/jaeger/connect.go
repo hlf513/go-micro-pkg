@@ -3,7 +3,7 @@ package jaeger
 import (
 	"io"
 
-	"github.com/micro/go-micro/util/log"
+	"github.com/micro/go-micro/v2/util/log"
 	"github.com/opentracing/opentracing-go"
 	client "github.com/uber/jaeger-client-go"
 )

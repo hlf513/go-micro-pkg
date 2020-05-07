@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"runtime/debug"
 
-	"github.com/micro/go-micro/errors"
-	"github.com/micro/go-micro/server"
+	"github.com/micro/go-micro/v2/errors"
+	"github.com/micro/go-micro/v2/server"
 	"github.com/opentracing/opentracing-go"
 
 	"github.com/hlf513/go-micro-pkg/config/jaeger"

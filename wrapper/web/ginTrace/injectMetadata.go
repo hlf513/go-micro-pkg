@@ -2,8 +2,8 @@ package ginTrace
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/micro/go-micro/metadata"
-	"github.com/micro/go-micro/util/log"
+	"github.com/micro/go-micro/v2/metadata"
+	"github.com/micro/go-micro/v2/util/log"
 	"github.com/opentracing/opentracing-go"
 )
 

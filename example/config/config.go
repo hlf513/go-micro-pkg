@@ -3,9 +3,9 @@ package config
 import (
 	"path/filepath"
 
-	"github.com/micro/go-micro/config/source/etcd"
-	"github.com/micro/go-micro/config/source/file"
-	"github.com/micro/go-micro/util/log"
+	"github.com/micro/go-micro/v2/config/source/etcd"
+	"github.com/micro/go-micro/v2/config/source/file"
+	"github.com/micro/go-micro/v2/util/log"
 
 	util "github.com/hlf513/go-micro-pkg/config"
 	"github.com/hlf513/go-micro-pkg/config/hystrix"

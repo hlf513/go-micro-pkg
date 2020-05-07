@@ -3,8 +3,8 @@ package kafka
 import (
 	"fmt"
 
-	"github.com/micro/go-micro/broker"
-	"github.com/micro/go-plugins/broker/kafka"
+	"github.com/micro/go-micro/v2/broker"
+	"github.com/micro/go-plugins/broker/kafka/v2"
 )
 
 var kafkaBroker broker.Broker

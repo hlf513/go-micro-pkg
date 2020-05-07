@@ -6,14 +6,14 @@ import (
 	"strings"
 	"time"
 
-	"github.com/micro/go-micro"
-	"github.com/micro/go-micro/registry"
-	s "github.com/micro/go-micro/server"
-	"github.com/micro/go-micro/util/log"
-	"github.com/micro/go-plugins/registry/etcdv3"
-	"github.com/micro/go-plugins/wrapper/trace/opentracing"
+	"github.com/micro/go-micro/v2"
+	"github.com/micro/go-micro/v2/registry"
+	"github.com/micro/go-micro/v2/registry/etcd"
+	s "github.com/micro/go-micro/v2/server"
+	"github.com/micro/go-micro/v2/util/log"
+	"github.com/micro/go-plugins/wrapper/trace/opentracing/v2"
 
-	"github.com/hlf513/go-micro-pkg/config/etcd"
+	e "github.com/hlf513/go-micro-pkg/config/etcd"
 	"github.com/hlf513/go-micro-pkg/config/jaeger"
 	"github.com/hlf513/go-micro-pkg/config/server"
 	"github.com/hlf513/go-micro-pkg/example/config"
@@ -44,8 +44,8 @@ func main() {
 	// 初始化 service
 	service := micro.NewService(
 		micro.Name(server.GetConf().Name),
-		micro.Registry(etcdv3.NewRegistry(func(op *registry.Options) {
-			op.Addrs = etcd.GetConf().Host
+		micro.Registry(etcd.NewRegistry(func(op *registry.Options) {
+			op.Addrs = e.GetConf().Host
 		})),
 
 		micro.Version("latest"),
