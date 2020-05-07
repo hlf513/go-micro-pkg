@@ -9,7 +9,8 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/opentracing/opentracing-go"
-	"github.com/opentracing/opentracing-go/ext"
+
+	"github.com/hlf513/go-micro-pkg/config/jaeger"
 )
 
 // bodyLogWriter 暂存响应
@@ -75,10 +76,9 @@ func LogToTraceWrapper() gin.HandlerFunc {
 
 		// error log
 		if len(c.Errors) > 0 {
+			jaeger.SetError(span, nil)
 			for n, e := range c.Errors.Errors() {
-				ext.SamplingPriority.Set(span, 1)
-				span.SetTag("error", true)
-				span.LogKV("error_"+strconv.Itoa(n), e, "debug.stack", string(debug.Stack()))
+				span.LogKV("error_msg_"+strconv.Itoa(n), e, "debug.stack", string(debug.Stack()))
 			}
 		}
 

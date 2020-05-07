@@ -46,7 +46,7 @@ func main() {
 		// web.RegisterTTL(30*time.Second),
 		// web.RegisterInterval(15*time.Second),
 
-		web.AfterStop(func() error {
+		web.BeforeStop(func() error {
 			common.WaitGroup().Wait()
 			time.Sleep(1 * time.Second) // 等待响应输出后再关闭
 			return nil
@@ -60,7 +60,7 @@ func main() {
 
 	// Jaeger
 	t, closer := jaeger.Connect()
-	defer closer.Close()
+	defer jaeger.Close(closer)
 
 	// create a gin engine
 	engine := gin.New()

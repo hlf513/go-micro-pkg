@@ -2,13 +2,15 @@ package srv
 
 import (
 	"context"
+	e "errors"
 	"fmt"
 	"runtime/debug"
 
 	"github.com/micro/go-micro/errors"
 	"github.com/micro/go-micro/server"
 	"github.com/opentracing/opentracing-go"
-	"github.com/opentracing/opentracing-go/ext"
+
+	"github.com/hlf513/go-micro-pkg/config/jaeger"
 )
 
 // RecoveryWrapper 恢复 srv 的 panic 异常，并返回 599 异常
@@ -20,8 +22,7 @@ func RecoveryWrapper() server.HandlerWrapper {
 					span := opentracing.SpanFromContext(ctx)
 					errMsg := fmt.Sprintf("%v", p)
 					if span != nil {
-						span.SetTag("error", true)
-						ext.SamplingPriority.Set(span, 1)
+						jaeger.SetError(span, e.New(errMsg))
 						// 记录错误日志
 						span.LogKV(
 							"error",

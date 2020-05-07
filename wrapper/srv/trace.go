@@ -3,13 +3,13 @@ package srv
 import (
 	"context"
 	"encoding/json"
-	"runtime/debug"
 
 	"github.com/gogo/protobuf/jsonpb"
 	"github.com/gogo/protobuf/proto"
 	"github.com/micro/go-micro/server"
 	"github.com/opentracing/opentracing-go"
-	"github.com/opentracing/opentracing-go/ext"
+
+	"github.com/hlf513/go-micro-pkg/config/jaeger"
 )
 
 // TraceLogWrapper 记录 rpc server 的请求和响应到 tracing 
@@ -29,9 +29,7 @@ func TraceLogWrapper() server.HandlerWrapper {
 			if span != nil {
 				if err != nil {
 					// 记录错误信息
-					span.SetTag("error", true)
-					ext.SamplingPriority.Set(span, 1)
-					span.LogKV("error_msg", err.Error(), "debug.stack", debug.Stack())
+					jaeger.SetError(span, err)
 				}
 
 				// 记录响应

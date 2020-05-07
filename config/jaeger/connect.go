@@ -13,16 +13,22 @@ func Connect() (opentracing.Tracer, io.Closer) {
 	conf := GetConf()
 	sender, err := client.NewUDPTransport(conf.Address, 0)
 	if err != nil {
-		log.Fatal("[jaeger connect] connect was failed", err.Error())
+		log.Fatal("[jaeger] connect was failed ", err.Error())
 	}
 
 	var tracer, closer = client.NewTracer(
 		conf.Name,
-		GetSampler(),
+		GetSampler(conf.Env),
 		client.NewRemoteReporter(sender),
 	)
 
 	opentracing.SetGlobalTracer(tracer)
 
 	return tracer, closer
+}
+
+func Close(closer io.Closer) {
+	if err := closer.Close(); err != nil {
+		log.Error("[jaeger] close was failed ", err.Error())
+	}
 }

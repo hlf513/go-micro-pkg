@@ -39,7 +39,7 @@ func main() {
 
 	// Jaeger
 	t, closer := jaeger.Connect()
-	defer closer.Close()
+	defer jaeger.Close(closer)
 
 	// 初始化 service
 	service := micro.NewService(

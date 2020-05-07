@@ -1,6 +1,7 @@
 package ginTrace
 
 import (
+	"errors"
 	"fmt"
 	"net"
 	"net/http"
@@ -10,7 +11,8 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/opentracing/opentracing-go"
-	"github.com/opentracing/opentracing-go/ext"
+
+	"github.com/hlf513/go-micro-pkg/config/jaeger"
 )
 
 // RecoveryWrapper 恢复 panic 并记录到日志中
@@ -34,9 +36,7 @@ func RecoveryWrapper() gin.HandlerFunc {
 
 				if brokenPipe {
 					if span != nil {
-						ext.SamplingPriority.Set(span, 1)
-						span.SetTag("error", true)
-						span.LogKV("error_msg", errorMsg, "debug.stack", string(debug.Stack()))
+						jaeger.SetError(span, errors.New(errorMsg))
 					}
 					// If the connection is dead, we can't write a status to it.
 					_ = c.Error(err.(error)) // nolint: errcheck
@@ -46,9 +46,7 @@ func RecoveryWrapper() gin.HandlerFunc {
 
 				errorMsg = fmt.Sprintf(`[Recovery from panic] - %s - %s`, errorMsg, debug.Stack())
 				if span != nil {
-					ext.SamplingPriority.Set(span, 1)
-					span.SetTag("error", true)
-					span.LogKV("error_msg", errorMsg, "debug.stack", string(debug.Stack()))
+					jaeger.SetError(span, errors.New(errorMsg))
 				}
 
 				c.AbortWithStatus(http.StatusInternalServerError)

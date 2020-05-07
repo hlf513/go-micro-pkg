@@ -2,9 +2,11 @@ package jaeger
 
 import (
 	"context"
+	"runtime/debug"
 
 	"github.com/micro/go-micro/metadata"
 	"github.com/opentracing/opentracing-go"
+	"github.com/opentracing/opentracing-go/ext"
 	client "github.com/uber/jaeger-client-go"
 )
 
@@ -36,8 +38,12 @@ func StopTrace(span opentracing.Span) {
 }
 
 // SetError 设置异常请求标签
-func SetError(span opentracing.Span) {
+func SetError(span opentracing.Span, err error) {
 	if span != nil {
+		ext.SamplingPriority.Set(span, 1)
 		span.SetTag("error", true)
+		if err != nil {
+			span.LogKV("error_msg", err.Error(), "debug.stack", debug.Stack())
+		}
 	}
 }

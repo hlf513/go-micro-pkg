@@ -11,6 +11,7 @@ import (
 type jaeger struct {
 	Name    string `json:"name"`
 	Address string `json:"address"`
+	Env     string `json:"env"`
 }
 
 // conf 定义更新配置

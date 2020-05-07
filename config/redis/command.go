@@ -5,7 +5,8 @@ import (
 
 	"github.com/gomodule/redigo/redis"
 	"github.com/opentracing/opentracing-go"
-	"github.com/opentracing/opentracing-go/ext"
+
+	"github.com/hlf513/go-micro-pkg/config/jaeger"
 )
 
 // GetConn 获取 Redis 连接
@@ -42,9 +43,7 @@ func (r redisConn) Do(commandName string, args ...interface{}) (interface{}, err
 	replay, err := r.conn.Do(commandName, args...)
 	if err != nil {
 		if r.span != nil {
-			ext.SamplingPriority.Set(r.span, 1)
-			r.span.SetTag("error", true)
-			r.span.LogKV("error", err.Error())
+			jaeger.SetError(r.span, err)
 		}
 		return nil, err
 	}
