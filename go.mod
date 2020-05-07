@@ -12,7 +12,6 @@ require (
 	github.com/jinzhu/gorm v1.9.11
 	github.com/micro/go-micro v1.18.0 // indirect
 	github.com/micro/go-micro/v2 v2.6.0
-	github.com/micro/go-plugins v1.5.1
 	github.com/micro/go-plugins/broker/kafka/v2 v2.5.0
 	github.com/micro/go-plugins/wrapper/breaker/hystrix/v2 v2.5.0
 	github.com/micro/go-plugins/wrapper/trace/opentracing/v2 v2.5.0
