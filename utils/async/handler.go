@@ -36,7 +36,7 @@ func Handler(f func(ctx context.Context, params ...interface{}) error, traceOper
 	}()
 
 	if err := f(c, funcParams...); err != nil {
-		jaeger.SetError(span)
+		jaeger.SetError(span, err)
 		zap.Error(c, err.Error())
 	}
 }
